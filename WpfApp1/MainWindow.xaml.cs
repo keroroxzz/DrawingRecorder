@@ -15,6 +15,12 @@ namespace WpfApp1
 {
     public partial class MainWindow : Window
     {
+        //LICENSE String
+        String about = "Drawing Recorder Alpha\n" +
+            "Libraries Used :\n" +
+            "FluentWPF Project under the MIT License.\n" +
+            "FFmpeg project (unmodified) under the LGPLv2.1.";
+
         //thread
         Thread Record_thread, UI_thread;
 
@@ -51,6 +57,10 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
+
+            ErrorString = about;
+
+            this.Opacity = 0.0;
 
             //initialize threads
             Record_thread = new Thread(RecordThread);
@@ -152,7 +162,7 @@ namespace WpfApp1
                 name = name + "_" + i;
             }
 
-            return "-framerate " + FrameRateBox.Text + " -i - -c:v libx265 -vf format=yuv420p -r " + FrameRateBox.Text + "  " + name + ".mp4";
+            return "-framerate " + FrameRateBox.Text + " -i - -c:v libx264 -vf format=yuv420p -r " + FrameRateBox.Text + "  " + name + ".mp4";
         }
 
         private Boolean isParametersReady()
@@ -202,23 +212,36 @@ namespace WpfApp1
 
         private void Window_MouseEnter(object sender, MouseEventArgs e)
         {
-            WindOpacity = 1.0;
+            if (WindOpacity != 0.0)
+                WindOpacity = 1.0;
         }
 
         private void Window_MouseLeave(object sender, MouseEventArgs e)
         {
-            WindOpacity = 0.75;
+            if (WindOpacity != 0.0)
+                WindOpacity = 0.75;
+        }
+
+        private void ExitButton(object sender, RoutedEventArgs e)
+        {
+
+            WindOpacity = 0.0;
+
+            void wait()
+            {
+                Thread.Sleep(2500);
+                System.Environment.Exit(1);
+            }
+
+            Thread Closing = new Thread(wait);
+
+            Closing.Start();
         }
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
             ToolBarHeight = 40.0;
             SettingBarHeight = 100.0;
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            System.Environment.Exit(1);
         }
 
         private void SettingGrid_MouseEnter(object sender, MouseEventArgs e)
@@ -328,7 +351,7 @@ namespace WpfApp1
                 };
                 Dispatcher.Invoke(dele);
 
-                Thread.Sleep(50);
+                Thread.Sleep(35);
             }
         }
 
