@@ -17,8 +17,8 @@
         <Grid x:Name="baseGrid">
             <Grid.RowDefinitions>
                 <RowDefinition/>
-                <RowDefinition x:Name="tool_bar" Height="19"/>
-                <RowDefinition x:Name="setting_bar" Height="0"/>
+                <RowDefinition x:Name="tool_bar" Height="80"/>
+                <RowDefinition x:Name="setting_bar" Height="115"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -33,10 +33,11 @@
                     <ColumnDefinition Width="31*"/>
                     <ColumnDefinition Width="3*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="start_but" Click="Start_but_Click" BorderBrush="GhostWhite" Focusable="False" Background="GhostWhite" Content="Captur" Foreground="Black"/>
+                <Button x:Name="start_but" Click="Start_but_Click" BorderBrush="GhostWhite" Focusable="False" Background="GhostWhite" Content="Capture" Foreground="Black"/>
                 <Button x:Name="stop_but" BorderBrush="GhostWhite" Focusable="False" Grid.Column="1" Background="GhostWhite" Click="stop_but_Click" RenderTransformOrigin="0.5,0.5" Content="Record"/>
 
                 <Button Grid.Column="3" Background="#FF0097FF" Content="X" IsCancel="True" Click="ExitButton"/>
+                <TextBlock x:Name="TargetTB" Grid.Column="2" TextWrapping="Wrap" FontSize="16" Foreground="{DynamicResource TextBox_TextColor}" Margin="0,15,0,0" TextAlignment="Center"/>
             </Grid>
             <Grid x:Name="SettingGrid" Grid.Row="2" Background="{DynamicResource SettingBarColor}" MouseLeave="SettingGrid_MouseLeave" MouseEnter="SettingGrid_MouseEnter">
                 <Grid.ColumnDefinitions>
@@ -62,12 +63,13 @@
                 <TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="FrameRate" Margin="0,0,3,0" Grid.Row="1" Grid.Column="1" Foreground="{DynamicResource TextBlock_TextColor}" />
                 <TextBlock x:Name="textBlock1" Grid.Row="3" TextWrapping="Wrap" Text="Interval (sec)" Grid.Column="1" Foreground="{DynamicResource TextBlock_TextColor}"/>
                 <TextBox x:Name="FrameRateBox" Grid.Column="2" TextWrapping="Wrap" Text="30" Grid.Row="1" CaretBrush="{DynamicResource TextBox_CaretColor}" Foreground="{DynamicResource TextBox_TextColor}" Background="{DynamicResource TextBox_Color}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
-                <TextBox x:Name="IntervalBox" Grid.Column="2" Grid.Row="3" TextWrapping="Wrap" Text="1" CaretBrush="{DynamicResource TextBox_CaretColor}" Foreground="{DynamicResource TextBox_TextColor}" Background="{DynamicResource TextBox_Color}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+                <TextBox x:Name="IntervalBox" Grid.Column="2" Grid.Row="3" TextWrapping="Wrap" Text="0.1" CaretBrush="{DynamicResource TextBox_CaretColor}" Foreground="{DynamicResource TextBox_TextColor}" Background="{DynamicResource TextBox_Color}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
                 <CheckBox x:Name="checkBox" Content="RecordChangedScreenOnly" Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="4" IsChecked="True" Foreground="{DynamicResource TextBlock_TextColor}" Margin="0,0,0,1"/>
                 <TextBlock x:Name="textBlock2" Grid.Column="4" Grid.Row="1" TextWrapping="Wrap" Text="FileName" Foreground="{DynamicResource TextBlock_TextColor}"/>
                 <TextBox x:Name="FileNameBox" Grid.Column="5" Grid.Row="1" TextWrapping="Wrap" Text="output" Foreground="{DynamicResource TextBox_TextColor}" Background="{DynamicResource TextBox_Color}" CaretBrush="{DynamicResource TextBox_CaretColor}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
-                <TextBox x:Name="ArgumentBox" Grid.ColumnSpan="5" Grid.Column="1" Grid.Row="5" TextWrapping="Wrap" Background="{DynamicResource TextBox_Color}" Foreground="{DynamicResource TextBox_TextColor}" CaretBrush="{DynamicResource TextBox_CaretColor}" Margin="0,0,0,1" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"/>
+                <TextBox x:Name="ArgumentBox" Grid.ColumnSpan="2" Grid.Column="1" Grid.Row="5" TextWrapping="Wrap" Background="{DynamicResource TextBox_Color}" Foreground="{DynamicResource TextBox_TextColor}" CaretBrush="{DynamicResource TextBox_CaretColor}" Margin="0,0,0,1" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"/>
                 <TextBox x:Name="ErrorMsg" Grid.Column="7" Grid.Row="1" Grid.RowSpan="5" TextWrapping="Wrap" Background="{DynamicResource TextBox_Color}" Foreground="{DynamicResource TextBox_TextColor}" CaretBrush="{DynamicResource TextBox_CaretColor}" IsUndoEnabled="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+                <CheckBox x:Name="TargetLock" Content="LockTargetApplication" Grid.Column="4" Grid.Row="5" Grid.ColumnSpan="2" IsChecked="True" Foreground="{DynamicResource TextBlock_TextColor}" Margin="0,0,0,1"/>
 
             </Grid>
         </Grid>
