@@ -1,7 +1,7 @@
-﻿<Application x:Class="WpfApp1.App"
+﻿<Application x:Class="DRnamespace.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:WpfApp1"
+             xmlns:local="clr-namespace:DRnamespace"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
 
@@ -11,6 +11,8 @@
         <SolidColorBrush x:Key="TextBox_Color" Color="#FF191919"/>
         <SolidColorBrush x:Key="TextBoxLocked_Color" Color="#FF494949"/>
         <SolidColorBrush x:Key="TextBox_CaretColor" Color="#FF93A0B4"/>
+        <SolidColorBrush x:Key="Red" Color="#BFFF2828"/>
+        <SolidColorBrush x:Key="Background" Color="#FF212121"/>
 
         <Style TargetType="Button">
             <Setter Property="Margin" Value="0"/>

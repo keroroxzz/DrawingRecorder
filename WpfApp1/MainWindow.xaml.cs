@@ -1,105 +1,84 @@
-﻿using System;
+﻿/*____________________________________________________
+Drawing Recorder Alpha v1.2
+
+Developed by keroroxzz
+
+External Process:
+    FFmpeg project (unmodified) under the LGPLv2.1
+_____________________________________________________*/
+
 using System.Threading;
 using System.Windows;
-using System.Windows.Media.Imaging;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Windows.Interop;
-using System.Runtime.InteropServices;
-using System.IO;
+using System.Windows.Forms;
 
-namespace WpfApp1
+namespace DRnamespace
 {
     public partial class MainWindow : Window
     {
-        //LICENSE String
-        String about = "Drawing Recorder Alpha\n" +
-            "Libraries Used :\n" +
-            "FluentWPF Project under the MIT License.\n" +
-            "FFmpeg project (unmodified) under the LGPLv2.1.";
+        public static string ErrorString { get; set; }
 
         //thread
-        Thread Record_thread, UI_thread;
+        Thread UI_thread;
 
-        //booleans
-        Boolean
-            isCapturing = false,
-            isStarted = false,
-            CheckScreenDif = true,
-            isTargetLock = true;
+        AppManager appmani;
+        FFmpeg ffmpeg;
+        Graph graph;
+        Recorder recorder;
 
-        [DllImport("gdi32.dll")]
-        private static extern void DeleteObject(IntPtr obj);
+        AreaWind area_window;
+        Displayer displayer;
+
+        NotifyIcon notify;
 
         public MainWindow()
         {
+            notify = new NotifyIcon
+            {
+                Icon = DRnamespace.Properties.Resources.notify_norm,
+                Visible = true
+            };
+
             InitializeComponent();
 
-            ErrorString = about;
+            appmani = new AppManager(false);
+            ffmpeg = new FFmpeg();
+            graph = new Graph((bool)DC_box.IsChecked);
+            recorder = new Recorder(appmani, ffmpeg, graph, CaptureButton, RecordButton, notify);
+
+            notify.MouseClick += (s, e) =>
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    Show();
+                    ShowInTaskbar = true;
+                    Activate();
+
+                    if (displayer.IsVisible)
+                    {
+                        displayer.Show();
+                        displayer.Activate();
+                    }
+                }
+                else if (e.Button == MouseButtons.Right)
+                {
+                    if (recorder.Recording())
+                        recorder.StopRecording();
+                    else
+                    {
+                        recorder.StartRecording();
+                    }
+                }
+            };
 
             this.Opacity = 0.0;
 
-            //initialize threads
-            Record_thread = new Thread(RecordThread);
-            Record_thread.Start();
+            recorder.Start();
 
             UI_thread = new Thread(UIthread);
             UI_thread.Start();
-        }
 
-        void RecordThread()
-        {
-            while (true)
-            {
-                if (isCapturing && (TargetName == ActiveName || !isTargetLock || !isStarted))
-                {
-                    try
-                    {
-                        //capture screen
-                        bitGraph.CopyFromScreen(px, py, 0, 0, new System.Drawing.Size(width, height));
-                            
-                        //compare with previouse one
-                        if (!CheckScreenDif || (IsBitmapsDiff(bmp, bmp_old) && CheckScreenDif))
-                        {
-                            //refresh pre-screen
-                            bmp_old.Dispose();
-                            bmp_old = (Bitmap)bmp.Clone();
-                                
-                            IntPtr bmp_ptr = bmp.GetHbitmap();
-
-                            //save file
-                            if (isStarted)
-                            {
-                                try
-                                {
-                                    using (var bmpStream = new MemoryStream())
-                                    {
-                                        bmp.Save(bmpStream, ImageFormat.Jpeg);
-                                        ffmpegStream.Write(bmpStream.ToArray(), 0, (int)bmpStream.Length);
-                                    }
-                                }
-                                catch { }
-                            }
-
-                            Action deleg = delegate ()
-                            {
-                                ImageBox.Source = Imaging.CreateBitmapSourceFromHBitmap(bmp_ptr, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-
-                                //dispose resources
-                                DeleteObject(bmp_ptr);
-                            };
-                            Dispatcher.BeginInvoke(deleg);
-
-                            Thread.Sleep(CapInt);
-                        }
-                        else
-                            Thread.Sleep(50);
-                    }
-                    catch { }
-                }
-                else
-                    Thread.Sleep(50);
-            }
+            area_window = new AreaWind();
+            displayer = new Displayer();
         }
     }
 }

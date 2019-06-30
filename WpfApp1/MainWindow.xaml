@@ -1,77 +1,91 @@
-﻿<Window x:Class="WpfApp1.MainWindow"
+﻿<Window x:Name="ControlBoard" x:Class="DRnamespace.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp1"
-        xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF"
+        xmlns:local="clr-namespace:DRnamespace"
         mc:Ignorable="d"
-        fw:AcrylicWindow.Enabled="True"
-        fw:AcrylicWindow.NoiseOpacity="0.0"
-        fw:AcrylicWindow.TintOpacity="0.5"
-        fw:AcrylicWindow.ShowTitleBar="False"
-        fw:AcrylicWindow.FallbackColor="DarkSlateGray"
-        fw:AcrylicWindow.TintColor="DarkSlateGray"
-        Title="Drawing Recorder" Height="450" Width="800" Closing="Window_Closing" WindowStyle="None" AllowsTransparency="True" MouseDown="Window_MouseDown" MouseEnter="Window_MouseEnter" MouseLeave="Window_MouseLeave" WindowStartupLocation="CenterScreen">
-    <Grid>
-        <Grid x:Name="baseGrid">
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition x:Name="tool_bar" Height="80"/>
-                <RowDefinition x:Name="setting_bar" Height="115"/>
-            </Grid.RowDefinitions>
+        Title="Drawing Recorder" Height="80" Width="521" Closing="Window_Closing" WindowStyle="None" AllowsTransparency="True" MouseDown="Window_MouseDown" MouseEnter="Window_MouseEnter" MouseLeave="Window_MouseLeave" WindowStartupLocation="CenterScreen" Margin="0" Background="#BF191919" Foreground="{x:Null}" BorderThickness="3">
+    <Grid x:Name="baseGrid" Margin="3,0,3,3">
+        <Grid.RowDefinitions>
+            <RowDefinition  Height="12"/>
+            <RowDefinition x:Name="tool_bar" Height="27*"/>
+            <RowDefinition x:Name="setting_bar" Height="32*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="34*"/>
+            <ColumnDefinition Width="23*"/>
+            <ColumnDefinition Width="7"/>
+            <ColumnDefinition Width="724*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.ColumnSpan="4" Background="{DynamicResource Background}"></TextBlock>
+
+        <TextBlock x:Name="DragBox" Foreground="White" Cursor="Hand" FontWeight="Bold" Opacity="0.8" Grid.Row="1" Grid.RowSpan="2" MouseDown="DragBox_MouseDown">
+            <TextBlock.Background>
+                <ImageBrush ImageSource="Resources/catch_bar.png" Stretch="Uniform"/>
+            </TextBlock.Background>
+        </TextBlock>
+        <TextBlock Grid.Column="2" Background="{DynamicResource Background}" Grid.Row="1" Grid.RowSpan="2"/>
+
+        <Button x:Name="BarChanger" Click="BarChanger_Click" BorderBrush="GhostWhite" Focusable="False" Grid.Column="1" BorderThickness="0" Grid.Row="1" Grid.RowSpan="2" Opacity="0.8" >
+            <Button.Background>
+                <ImageBrush ImageSource="Resources/BarBut.png" Stretch="Uniform"/>
+            </Button.Background>
+        </Button>
+        <Grid Grid.Column="3" Margin="0,0,0,1" Grid.Row="1">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="96"/>
                 <ColumnDefinition/>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="60"/>
             </Grid.ColumnDefinitions>
+            <Button x:Name="CaptureButton" Click="CaptureButton_Click" BorderBrush="{x:Null}" Focusable="False" Content="Capture" Foreground="Black" Grid.Column="1" Background="GhostWhite" FontWeight="Bold" Opacity="0.8"/>
+            <Button x:Name="RecordButton" BorderBrush="{x:Null}" Focusable="False" Grid.Column="2" Background="GhostWhite" Click="RecordButton_Click" RenderTransformOrigin="0.5,0.5" Content="Record" FontWeight="Bold" Opacity="0.8"/>
+            <Button x:Name="AreaButton" BorderBrush="{x:Null}" Focusable="False" Content="Area" Click="AreaButton_Click" Foreground="Black" Background="GhostWhite" FontWeight="Bold" Opacity="0.8"/>
 
-            <Image x:Name="ImageBox"/>
-
-            <Grid Grid.Row="1" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave" Background="#FF44535B" MouseDown="Grid_MouseDown">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="31*"/>
-                    <ColumnDefinition Width="3*"/>
-                </Grid.ColumnDefinitions>
-                <Button x:Name="start_but" Click="Start_but_Click" BorderBrush="GhostWhite" Focusable="False" Background="GhostWhite" Content="Capture" Foreground="Black"/>
-                <Button x:Name="stop_but" BorderBrush="GhostWhite" Focusable="False" Grid.Column="1" Background="GhostWhite" Click="stop_but_Click" RenderTransformOrigin="0.5,0.5" Content="Record"/>
-
-                <Button Grid.Column="3" Background="#FF0097FF" Content="X" IsCancel="True" Click="ExitButton"/>
-                <TextBlock x:Name="TargetTB" Grid.Column="2" TextWrapping="Wrap" FontSize="16" Foreground="{DynamicResource TextBox_TextColor}" Margin="0,15,0,0" TextAlignment="Center"/>
-            </Grid>
-            <Grid x:Name="SettingGrid" Grid.Row="2" Background="{DynamicResource SettingBarColor}" MouseLeave="SettingGrid_MouseLeave" MouseEnter="SettingGrid_MouseEnter">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="34*"/>
-                    <ColumnDefinition Width="100*"/>
-                    <ColumnDefinition Width="98*"/>
-                    <ColumnDefinition Width="33*"/>
-                    <ColumnDefinition Width="100*"/>
-                    <ColumnDefinition Width="99*"/>
-                    <ColumnDefinition Width="33*"/>
-                    <ColumnDefinition Width="275*"/>
-                    <ColumnDefinition Width="33*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="14*"/>
-                    <RowDefinition Height="26*"/>
-                    <RowDefinition Height="14*"/>
-                    <RowDefinition Height="26*"/>
-                    <RowDefinition Height="14*"/>
-                    <RowDefinition Height="26*"/>
-                    <RowDefinition Height="14*"/>
-                </Grid.RowDefinitions>
-                <TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="FrameRate" Margin="0,0,3,0" Grid.Row="1" Grid.Column="1" Foreground="{DynamicResource TextBlock_TextColor}" />
-                <TextBlock x:Name="textBlock1" Grid.Row="3" TextWrapping="Wrap" Text="Interval (sec)" Grid.Column="1" Foreground="{DynamicResource TextBlock_TextColor}"/>
-                <TextBox x:Name="FrameRateBox" Grid.Column="2" TextWrapping="Wrap" Text="30" Grid.Row="1" CaretBrush="{DynamicResource TextBox_CaretColor}" Foreground="{DynamicResource TextBox_TextColor}" Background="{DynamicResource TextBox_Color}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
-                <TextBox x:Name="IntervalBox" Grid.Column="2" Grid.Row="3" TextWrapping="Wrap" Text="0.1" CaretBrush="{DynamicResource TextBox_CaretColor}" Foreground="{DynamicResource TextBox_TextColor}" Background="{DynamicResource TextBox_Color}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
-                <CheckBox x:Name="checkBox" Content="RecordChangedScreenOnly" Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="4" IsChecked="True" Foreground="{DynamicResource TextBlock_TextColor}" Margin="0,0,0,1"/>
-                <TextBlock x:Name="textBlock2" Grid.Column="4" Grid.Row="1" TextWrapping="Wrap" Text="FileName" Foreground="{DynamicResource TextBlock_TextColor}"/>
-                <TextBox x:Name="FileNameBox" Grid.Column="5" Grid.Row="1" TextWrapping="Wrap" Text="output" Foreground="{DynamicResource TextBox_TextColor}" Background="{DynamicResource TextBox_Color}" CaretBrush="{DynamicResource TextBox_CaretColor}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
-                <TextBox x:Name="ArgumentBox" Grid.ColumnSpan="2" Grid.Column="1" Grid.Row="5" TextWrapping="Wrap" Background="{DynamicResource TextBox_Color}" Foreground="{DynamicResource TextBox_TextColor}" CaretBrush="{DynamicResource TextBox_CaretColor}" Margin="0,0,0,1" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"/>
-                <TextBox x:Name="ErrorMsg" Grid.Column="7" Grid.Row="1" Grid.RowSpan="5" TextWrapping="Wrap" Background="{DynamicResource TextBox_Color}" Foreground="{DynamicResource TextBox_TextColor}" CaretBrush="{DynamicResource TextBox_CaretColor}" IsUndoEnabled="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
-                <CheckBox x:Name="TargetLock" Content="LockTargetApplication" Grid.Column="4" Grid.Row="5" Grid.ColumnSpan="2" IsChecked="True" Foreground="{DynamicResource TextBlock_TextColor}" Margin="0,0,0,1"/>
-
-            </Grid>
+            <Button Grid.Column="7" Content="" IsCancel="True" Click="ExitButton" BorderBrush="{x:Null}" Foreground="{x:Null}">
+                <Button.Background>
+                    <ImageBrush ImageSource="Resources/Exit.png" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="Lock_Button" Grid.Column="4" FontSize="16" BorderBrush="GhostWhite" Focusable="False" Background="GhostWhite" Click="LockButton_Click" Opacity="0.8" />
+            <Button x:Name="ProportionButtion" BorderBrush="{x:Null}" Focusable="False" Background="GhostWhite" Content="None" Grid.Column="3" Click="ProportionButtion_Click" FontWeight="Bold" Opacity="0.8"/>
+            <Button x:Name="HideButton" Grid.Column="6" Content="" IsCancel="True" FontSize="24" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="HideButton_Click">
+                <Button.Background>
+                    <ImageBrush ImageSource="Resources/hide.png" Stretch="Uniform"/>
+                </Button.Background>
+            </Button>
         </Grid>
+        <Grid x:Name="SettingGrid" Grid.Row="2" Background="#FF262829" Grid.Column="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition Width="71*"/>
+                <ColumnDefinition Width="64*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="99*"/>
+                <ColumnDefinition Width="201*"/>
+                <ColumnDefinition Width="5"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5"/>
+                <RowDefinition/>
+                <RowDefinition Height="5"/>
+                <RowDefinition/>
+                <RowDefinition Height="5"/>
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="textBlock" TextWrapping="Wrap" Text="FrameRate" Margin="0,0,3,0" Grid.Row="1" Grid.Column="1" Foreground="{DynamicResource TextBlock_TextColor}" />
+            <TextBlock x:Name="textBlock1" Grid.Row="3" TextWrapping="Wrap" Text="Interval (sec)" Grid.Column="1" Foreground="{DynamicResource TextBlock_TextColor}"/>
+            <TextBox x:Name="FrameRateBox" Grid.Column="2" TextWrapping="Wrap" Text="30" Grid.Row="1" CaretBrush="{DynamicResource TextBox_CaretColor}" Foreground="{DynamicResource TextBox_TextColor}" Background="{DynamicResource TextBox_Color}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" TextChanged="FrameRateBox_TextChanged"/>
+            <TextBox x:Name="IntervalBox" Grid.Column="2" Grid.Row="3" TextWrapping="Wrap" Text="0.1" CaretBrush="{DynamicResource TextBox_CaretColor}" Foreground="{DynamicResource TextBox_TextColor}" Background="{DynamicResource TextBox_Color}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" TextChanged="IntervalBox_TextChanged"/>
+            <CheckBox x:Name="DC_box" Content="DetectChange" Grid.Row="3" Grid.Column="4" IsChecked="True" Foreground="{DynamicResource TextBlock_TextColor}" Margin="0,0,0,1" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked"/>
+            <TextBlock x:Name="textBlock2" Grid.Column="4" Grid.Row="1" TextWrapping="Wrap" Text="FileName" Foreground="{DynamicResource TextBlock_TextColor}"/>
+            <TextBox x:Name="FileNameBox" Grid.Column="5" Grid.Row="1" TextWrapping="Wrap" Text="output" Foreground="{DynamicResource TextBox_TextColor}" Background="{DynamicResource TextBox_Color}" CaretBrush="{DynamicResource TextBox_CaretColor}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" TextChanged="FileNameBox_TextChanged"/>
+            <TextBox Grid.Column="5" Grid.Row="3" x:Name="ArgumentBox" Text="" Foreground="{DynamicResource TextBox_TextColor}" Background="{DynamicResource TextBox_Color}" CaretBrush="{DynamicResource TextBox_CaretColor}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+        </Grid>
+        <TextBlock Grid.Column="3" Background="{DynamicResource Background}" Margin="336,0,121,1" Grid.Row="1"/>
     </Grid>
 </Window>

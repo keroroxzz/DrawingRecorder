@@ -1,136 +1,288 @@
 ﻿using System;
 using System.Threading;
 using System.Windows;
+using System.IO;
 using System.Windows.Input;
+using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
 
-namespace WpfApp1
+
+using System.Windows.Media.Imaging;
+using System.Windows.Interop;
+
+namespace DRnamespace
 {
     public partial class MainWindow : Window
     {
-        //UI
-        double ToolBarHeight = 15.0,
-        WindOpacity = 1.0,
-        SettingBarHeight = 0.0;
-        String mouseEnterP = "", mouseEnter = "";
+        double
+            WindOpacity = 1.0,
+            ToolBarHeight = 60.0,
+            SettingBarHeight = 0.0;
 
         void UIthread()
         {
             while (true)
             {
-                //bar controlling
-                if (mouseEnter == "TB")
-                {
-                    ToolBarHeight = 40.0;
-                }
-                else if (mouseEnter == "SB" && mouseEnterP == "TB")
-                {
-                    SettingBarHeight = 100.0;
-                }
-                else if (mouseEnter == "" && mouseEnterP == "SB")
-                {
-                    ToolBarHeight = 15.0;
-                    SettingBarHeight = 50.0;
-                }
-                else if (mouseEnter == "" && mouseEnterP == "TB")
-                {
-                    ToolBarHeight = 15.0;
-                }
-                else if (mouseEnter == "SB" && mouseEnterP == "SB")
-                {
-                    ToolBarHeight = 40.0;
-                    SettingBarHeight = 100.0;
-                }
-
                 Action dele = delegate ()
                 {
-                    ErrorMsg.Text = ErrorString;
+                    UpdateUI();
 
-                    tool_bar.Height = new GridLength((tool_bar.Height.Value + ToolBarHeight) * 0.5);
-                    setting_bar.Height = new GridLength((setting_bar.Height.Value + SettingBarHeight) * 0.5);
-                    this.Opacity = (WindOpacity + this.Opacity) * 0.5;
-
-                //prevent maximizing
-                if (this.WindowState == WindowState.Maximized)
+                    //prevent maximizing
+                    if (this.WindowState != WindowState.Maximized)
                         this.WindowState = WindowState.Normal;
 
-
-                    CheckScreenDif = checkBox.IsChecked.Value;
-                    isTargetLock = TargetLock.IsChecked.Value;
-
-                    try
-                    {
-                        CapInt = (int)(Convert.ToDouble(IntervalBox.Text) * 1000);
-                    }
-                    catch { }
-
                     //get window information
-                    if (isCapturing) 
+                    if (recorder.Capturing())
                     {
-                        if (isStarted)
-                        {
-                            ActiveName = GetProcessNameOfForegroundWindows();
+                        if (graph.GetIntPtr() != IntPtr.Zero)
+                            try
+                            {
+                                displayer.ImageBox.Source = Imaging.CreateBitmapSourceFromHBitmap(graph.GetIntPtr(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                                graph.DeleteIntPtr();
+                            }
+                            catch { }
 
-                            if (TargetName == ActiveName)
-                                stop_but.Background = Brushes.Red;
+                        if (area_window.IsVisible)
+                            graph.Shift(area_window.Left, area_window.Top);
+
+                        if (recorder.Recording())
+                            if (appmani.IsTargetActive())
+                            {
+                                RecordButton.Background = Brushes.Red;
+
+                                if (ffmpeg.IsWrited())
+                                    notify.Icon = Properties.Resources.notify_writing;
+                                else
+                                    notify.Icon = Properties.Resources.notify_capturing;
+                            }
                             else
-                                stop_but.Background = Brushes.IndianRed;
+                            {
+                                RecordButton.Background = Brushes.IndianRed;
+                                notify.Icon = Properties.Resources.notify_norm;
+                            }
                         }
-
-                        TargetTB.Text = TargetName;
-                    }
-                    else TargetName = GetProcessNameOfNextWindows();
+                    else if(!appmani.Lock())
+                        appmani.SetTargetToNextWindow();
                 };
                 Dispatcher.Invoke(dele);
 
-                Thread.Sleep(30);
+                //Thread.Sleep(65);
+                SpinWait.SpinUntil(() => false, 65);
             }
+        }
+
+        void UpdateUI()
+        {
+            tool_bar.Height = new GridLength((tool_bar.Height.Value + ToolBarHeight) * 0.5);
+            setting_bar.Height = new GridLength((setting_bar.Height.Value + SettingBarHeight) * 0.5);
+            this.Opacity = (WindOpacity + this.Opacity) * 0.5;
+            area_window.Opacity = (1.0 - WindOpacity + area_window.Opacity) * 0.5 + 0.4;
         }
 
         void LockTextBoxs()
         {
-            FileNameBox.Background = (System.Windows.Media.Brush)FindResource("TextBoxLocked_Color");
-            FrameRateBox.Background = (System.Windows.Media.Brush)FindResource("TextBoxLocked_Color");
-            ArgumentBox.Background = (System.Windows.Media.Brush)FindResource("TextBoxLocked_Color");
-            FileNameBox.IsReadOnly = true;
-            FrameRateBox.IsReadOnly = true;
-            ArgumentBox.IsReadOnly = true;
+            FileNameBox.Background = (Brush)FindResource("TextBoxLocked_Color");
+            FrameRateBox.Background = (Brush)FindResource("TextBoxLocked_Color");
+            ArgumentBox.Background = (Brush)FindResource("TextBoxLocked_Color");
+
+            FileNameBox.IsReadOnly = FrameRateBox.IsReadOnly = ArgumentBox.IsReadOnly = true;
         }
 
         private void UnlockTextBoxs()
         {
-            FileNameBox.Background = (System.Windows.Media.Brush)FindResource("TextBox_Color");
-            FrameRateBox.Background = (System.Windows.Media.Brush)FindResource("TextBox_Color");
-            ArgumentBox.Background = (System.Windows.Media.Brush)FindResource("TextBox_Color");
-            FileNameBox.IsReadOnly = false;
-            FrameRateBox.IsReadOnly = false;
-            ArgumentBox.IsReadOnly = false;
+            FileNameBox.Background = (Brush)FindResource("TextBox_Color");
+            FrameRateBox.Background = (Brush)FindResource("TextBox_Color");
+            ArgumentBox.Background = (Brush)FindResource("TextBox_Color");
+
+            FileNameBox.IsReadOnly = FrameRateBox.IsReadOnly = ArgumentBox.IsReadOnly = false;
         }
 
+        //====================================================ToolBar=============================================================
 
-        private void stop_but_Click(object sender, RoutedEventArgs e)
+        private void DragBox_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (isCapturing && TargetName != "DrawingRecorder")
-            {
-                isStarted = !isStarted;
-                if (isStarted)
-                    stop_but.Background = Brushes.Red;
+            if (e.ClickCount == 1 && e.ChangedButton == MouseButton.Right)
+                if (displayer.IsVisible)
+                {
+                    displayer.Hide();
+                }
                 else
-                    stop_but.Background = Brushes.GhostWhite;
+                {
+                    displayer.Show();
+                    displayer.Activate();
+                }
+        }
+
+        private void BarChanger_Click(object sender, RoutedEventArgs e)
+        {
+            if (ToolBarHeight == 60.0)
+            {
+                ToolBarHeight = 0.0;
+                SettingBarHeight = 60.0;
+            }
+            else
+            {
+                ToolBarHeight = 60.0;
+                SettingBarHeight = 0.0;
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void AreaButton_Click(object sender, RoutedEventArgs e)
         {
-            tool_bar.Height = new GridLength(30);
+            if (area_window.IsVisible)
+            {
+                AreaButton.Background = Brushes.GhostWhite;
+                area_window.Hide();
+            }
+            else
+            {
+                AreaButton.Background = Brushes.Red;
+                area_window.Show();
+                area_window.Activate();
+            }
         }
+
+        private void CaptureButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!recorder.Capturing())   //start capturing
+            {
+                if (isParametersReady())
+                {
+                    if (area_window.IsVisible)
+                    {
+                        AreaButton.Background = Brushes.GhostWhite;
+                        area_window.Hide();
+                    }
+
+                    if (ArgumentBox.Text == "")
+                        FileNameBox_TextChanged(sender, null);
+
+                    graph.Initial(area_window.Left, area_window.Top, area_window.Width, area_window.Height);
+
+                    area_window.LockSize();
+
+                    LockTextBoxs();
+                    ffmpeg.Startup(ArgumentBox.Text);
+
+                    recorder.StartCapturing();
+                }
+                else
+                    ArgumentBox.Text = "Parameters Error!";
+            }
+            else   //stop capturing
+            {
+                notify.Icon = Properties.Resources.notify_norm;
+
+                UnlockTextBoxs();
+                ffmpeg.finish();
+
+                area_window.UnlockSize();
+
+                //reset argumentbox
+                ArgumentBox.Text = "";
+
+                //reset the record button
+                if (recorder.Recording())
+                    recorder.StopRecording();
+
+                recorder.StopCapturing();
+            }
+        }
+
+        private void RecordButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (recorder.Capturing())
+            {
+                if (!recorder.Recording())
+                {
+                    recorder.StartRecording();
+
+                    if(area_window.IsVisible)
+                    {
+                        AreaButton.Background = Brushes.GhostWhite;
+                        area_window.Hide();
+                    }
+                }
+                else
+                    recorder.StopRecording();
+            }
+        }
+
+        string[] proportion_text = { "None", "4:3", "16:9", "3:4", "9:16" };
+        int proportion_index = 0;
+
+        private void ProportionButtion_Click(object sender, RoutedEventArgs e)
+        {
+            if (!recorder.Capturing())
+            {
+                proportion_index = proportion_index == 4 ? 0 : proportion_index + 1;
+
+                ProportionButtion.Content = proportion_text[proportion_index];
+
+                switch (proportion_index)
+                {
+                    case 0: area_window.setProportion(0.0, 0.0); break;
+                    case 1: area_window.setProportion(4.0, 3.0); break;
+                    case 2: area_window.setProportion(16.0, 9.0); break;
+                    case 3: area_window.setProportion(3.0, 4.0); break;
+                    case 4: area_window.setProportion(9.0, 16.0); break;
+                }
+            }
+        }
+
+        private void LockButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (appmani.Lock())
+            {
+                appmani.Unlock();
+                Lock_Button.Background = Brushes.GhostWhite;
+                Lock_Button.Content = "";
+            }
+            else
+            {
+                appmani.SetTargetToNextWindow();
+                if (appmani.IsTargetAvalible())
+                {
+                    appmani.ActiveLock();
+                    Lock_Button.Content = appmani.Target();
+                    Lock_Button.Background = Brushes.Red;
+                }
+                else
+                {
+                    Lock_Button.Content = "";
+                    notify.ShowBalloonTip(300, "", "Unavaliable Target!", System.Windows.Forms.ToolTipIcon.Info);
+                }
+            }
+        }
+
+        private void HideButton_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            ShowInTaskbar = false;
+        }
+
+        private void ExitButton(object sender, RoutedEventArgs e)
+        {
+            WindOpacity = 0.0;
+            displayer.Close();
+            area_window.Close();
+
+            void wait()
+            {
+                Thread.Sleep(600);
+
+                Action del = delegate () { this.Close(); };
+                Dispatcher.Invoke(del);
+            }
+            new Thread(wait).Start();
+        }
+
+        //=========================================================================================================================
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
-            {
-                this.DragMove();
-            }
+                DragMove();
         }
 
         private void Window_MouseEnter(object sender, MouseEventArgs e)
@@ -145,97 +297,72 @@ namespace WpfApp1
                 WindOpacity = 0.75;
         }
 
-        private void ExitButton(object sender, RoutedEventArgs e)
+        private void FrameRateBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
+            CreateArgument();
+        }
 
-            WindOpacity = 0.0;
+        private void IntervalBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (recorder != null)
+                recorder.SetCaptureInterval((int)(Convert.ToDouble(IntervalBox.Text) * 1000));
+        }
 
-            void wait()
+        private void FileNameBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (FileNameBox != null)
             {
-                Thread.Sleep(800);
-                System.Environment.Exit(1);
-            }
-
-            Thread Closing = new Thread(wait);
-
-            Closing.Start();
-        }
-
-        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            ToolBarHeight = 40.0;
-            SettingBarHeight = 100.0;
-        }
-
-        private void SettingGrid_MouseEnter(object sender, MouseEventArgs e)
-        {
-            mouseEnter = "SB";
-        }
-
-        private void SettingGrid_MouseLeave(object sender, MouseEventArgs e)
-        {
-            mouseEnterP = mouseEnter;
-            mouseEnter = "";
-        }
-        private void Grid_MouseEnter(object sender, MouseEventArgs e)
-        {
-            mouseEnter = "TB";
-        }
-
-        private void Grid_MouseLeave(object sender, MouseEventArgs e)
-        {
-            if (mouseEnterP == "SB")
-                SettingBarHeight = 0.0;
-
-            mouseEnterP = mouseEnter;
-            mouseEnter = "";
-        }
-
-
-        private void Start_but_Click(object sender, RoutedEventArgs e)
-        {
-            if (!isCapturing)   //start capturing
-            {
-                intializeGraph();
-
-                start_but.Background = Brushes.Red;
-
-                Width = System.Windows.SystemParameters.PrimaryScreenWidth / 7.0;
-                Height = (float)height / (float)width * Width;
-
-                if (isParametersReady())
+                if (File.Exists(FileNameBox.Text + ".mp4"))
                 {
-                    if (ArgumentBox.Text.Length == 0)
-                        ArgumentBox.Text = GetArgument();
-
-                    initializeFFmpeg();
+                    int i = 0;
+                    for (; File.Exists(FileNameBox.Text + "_" + i + ".mp4"); i++) ;
+                    FileNameBox.Text = FileNameBox.Text + "_" + i;
                 }
-                else
-                    ArgumentBox.Text = "Parameters Error!";
+
+                CreateArgument();
             }
-            else   //stop capturing
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (graph != null)
+                graph.ActiveDectect();
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (graph != null)
+                graph.StopDectect();
+        }
+
+        private void CreateArgument()
+        {
+            if (ArgumentBox != null && FileNameBox != null && FrameRateBox != null)
+                ArgumentBox.Text = "-framerate " + FrameRateBox.Text + " -i - -c:v libx264 -vf format=yuv420p -r " + FrameRateBox.Text + "  " + FileNameBox.Text + ".mp4";
+        }
+
+        private Boolean isParametersReady()
+        {
+            if (FileNameBox.Text.Length > 0 && FrameRateBox.Text.Length > 0 && IntervalBox.Text.Length > 0)
             {
-                start_but.Background = Brushes.GhostWhite;
-
-                finishFFmpeg();
-
-                //reset argumentbox
-                ArgumentBox.Text = "";
-                TargetTB.Text = "";
-
-                //reset the record button
-                if (isStarted)
+                try
                 {
-                    isStarted = false;
-                    stop_but.Background = Brushes.GhostWhite;
+                    Convert.ToDouble(FrameRateBox.Text);
+                    Convert.ToDouble(IntervalBox.Text);
                 }
+                catch
+                {
+                    return false;
+                }
+                return true;
             }
-            isCapturing = !isCapturing;
+            return false;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Record_thread.Abort();
+            notify.Visible = false;
+            recorder.Abort();
             UI_thread.Abort();
         }
     }
