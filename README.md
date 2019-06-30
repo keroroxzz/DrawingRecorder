@@ -5,5 +5,5 @@ Save your disk space
 Easy to use
 
 Features:
-  Record only when screen changes.
-  Automatically stop recording when not using application you lock on.
+  Record only when the screen changes.
+  Automatically stop recording when not using the application you lock on.
