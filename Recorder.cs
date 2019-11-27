@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Diagnostics;
+using System.Windows.Media;
 using System.Windows.Controls;
 using Brushes = System.Windows.Media.Brushes;
 
@@ -11,8 +12,8 @@ namespace DRnamespace
         Thread RecordThread;
 
         //booleans
-        private Boolean isCapturing;
-        private Boolean isRecording;
+        private bool isCapturing;
+        private bool isRecording;
 
         int CapInt;
 
@@ -23,6 +24,8 @@ namespace DRnamespace
         Button RecBut, CapBut;
         System.Windows.Forms.NotifyIcon NotifIco;
 
+        private MediaPlayer StartSound, StopSound;
+
         public Recorder(AppManager app, FFmpeg ffm, Graph gra, Button cb, Button rb, System.Windows.Forms.NotifyIcon nf)
         {
             appfind = app;
@@ -31,6 +34,11 @@ namespace DRnamespace
             CapBut = cb;
             RecBut = rb;
             NotifIco = nf;
+
+            StartSound = new MediaPlayer();
+            StartSound.Open(new Uri(System.Windows.Forms.Application.StartupPath+"/Sounds/Start.wav"));
+            StopSound = new MediaPlayer();
+            StopSound.Open(new Uri(System.Windows.Forms.Application.StartupPath + "/Sounds/Stop.wav"));
         }
 
         public bool Recording()
@@ -46,12 +54,23 @@ namespace DRnamespace
                 NotifIco.Icon = Properties.Resources.notify_capturing;
             }
         }
+        public void PlayStartSound()
+        {
+            StartSound.Position = TimeSpan.Zero;
+            StartSound.Play();
+        }
+        public void PlayStopSound()
+        {
+            StopSound.Position = TimeSpan.Zero;
+            StopSound.Play();
+        }
 
         public void StopRecording()
         {
             isRecording = false;
             RecBut.Background = Brushes.GhostWhite;
             NotifIco.Icon = Properties.Resources.notify_norm;
+            PlayStopSound();
         }
 
         public bool Capturing()
