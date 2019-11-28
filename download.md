@@ -9,4 +9,4 @@
 <p> </p>4.Considering the time to process the image, which makes the speed up more accurate.
 <p> </p>4.Sounds for recording/stop
 
-<a href="{{site.baseurl}}" class="btn" style = "background-color:#157878">MainPage</a>
+<a href="{{site.baseurl}}" class="btn" style = "background-color:#157878"><<MainPage</a>
