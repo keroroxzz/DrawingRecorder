@@ -1,3 +1,5 @@
+<p hidden>lastest : 1.0</p>
+
 <h1 class="project-name">V 1.0</h1>- 2019/11/28
 
 <a href="https://ref.gamer.com.tw/redir.php?url=https%3A%2F%2Fmega.nz%2F%23%21PR5nSa6D%21AJKwdLHNNypiaYBveJPGTC7dyIdl_XhXiVACtXGkbLk" class="btn" style = "background-color:#157878">Win10 32/64</a>
