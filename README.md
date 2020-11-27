@@ -1,9 +1,15 @@
-# DrawingRecorder
-A recorder for paint recording
+# DrawingRecorder v1.2.1
+Make it easy, just record it!
 
-Save your disk space
-Easy to use
 
-Features:
+#Features
   Record only when the screen changes.
   Automatically stop recording when not using the application you lock on.
+
+
+#Build
+  VisualStudio 2019
+
+
+#Lastest Version
+  v1.2.1
