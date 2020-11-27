@@ -1,0 +1,59 @@
+﻿/*
+ * Author : Brian Tu (RTU)
+ * Last modify : -
+ * 
+ * The class Compare compares images to see if they are identical.
+ */
+
+using System;
+using System.Drawing;
+using System.Diagnostics;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
+
+namespace DRnamespace
+{
+    class Compare
+    {
+        [DllImport("msvcrt.dll")]
+        private static extern int memcmp(IntPtr a, IntPtr b, long count);
+
+        private Bitmap last = null;
+
+
+        public bool Comparing(Bitmap bmp)
+        {
+            try
+            {
+                if (last == null)
+                {
+                    last = (Bitmap)bmp.Clone();
+                    return true;
+                }
+
+                //fast comparison : https://stackoverflow.com/questions/2031217/what-is-the-fastest-way-i-can-compare-two-equal-size-bitmaps-to-determine-whethe
+
+                var a_b = bmp.LockBits(new Rectangle(new Point(0, 0), bmp.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                var b_b = last.LockBits(new Rectangle(new Point(0, 0), last.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+                IntPtr
+                    a_ptr = a_b.Scan0,
+                    b_ptr = b_b.Scan0;
+
+                int res = memcmp(a_ptr, b_ptr, a_b.Height * a_b.Stride);
+
+                bmp.UnlockBits(a_b);
+                last.UnlockBits(b_b);
+
+                last = (Bitmap)bmp.Clone();
+
+                return res != 0;
+            }
+            catch(Exception e)
+            {
+                Trace.WriteLine("Compare failed : " + e.Data);
+            }
+            return true;
+        }
+    }
+}

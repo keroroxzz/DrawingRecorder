@@ -1,0 +1,55 @@
+﻿<Window x:Class="DRnamespace.AreaWind"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DRnamespace"
+        Title="AreaWind" BorderThickness="2"  Closing="Window_Closing" WindowStartupLocation="Manual" IsTabStop="False" Focusable="False" Foreground="{x:Null}" WindowStyle="None" AllowsTransparency="True" Background="#02000000" BorderBrush="#FF263940" Height="480" Width="720" ResizeMode="CanResizeWithGrip" Topmost="True" Cursor="Hand" ShowInTaskbar="False" Visibility="Visible" SizeChanged="Window_SizeChanged" MinWidth="100" MinHeight="100">
+    <Grid Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="14"/>
+            <RowDefinition Height="100*"/>
+            <RowDefinition Height="202*"/>
+            <RowDefinition Height="100*"/>
+            <RowDefinition Height="14"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="14"/>
+            <ColumnDefinition Width="200*"/>
+            <ColumnDefinition Width="404*"/>
+            <ColumnDefinition Width="200*"/>
+            <ColumnDefinition Width="14"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock x:Name="Up" Grid.Column="2" Background="{DynamicResource Background}" Cursor="SizeNS"/>
+        <TextBlock x:Name="Down" Grid.Column="2" Grid.Row="4" Background="{DynamicResource Background}" Cursor="SizeNS"/>
+        <TextBlock x:Name="Left_" Grid.Row="2" Background="{DynamicResource Background}" Cursor="SizeWE"/>
+        <TextBlock x:Name="Right" Grid.Column="4" Grid.Row="2" Background="{DynamicResource Background}" Cursor="SizeWE"/>
+        <TextBlock x:Name="Center" Grid.Column="1" Grid.Row="1" MouseDown="Center_MouseDown" Grid.ColumnSpan="3" Grid.RowSpan="3" MouseMove="Center_MouseMove"/>
+        <Grid x:Name="SizeBar" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" MinWidth="150">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20*"/>
+                <ColumnDefinition Width="70*"/>
+                <ColumnDefinition Width="20*"/>
+                <ColumnDefinition Width="70*"/>
+                <ColumnDefinition Width="20*"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="WidthBox" Grid.Column="1" Foreground="Black" TextAlignment="Center" PreviewKeyDown="TypeInSize" MouseWheel="MouseWheelResize"/>
+            <TextBlock Grid.Column="2" Text="X" Foreground="White" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBox x:Name="HeightBox" Grid.Column="3" Foreground="Black" TextAlignment="Center" PreviewKeyDown="TypeInSize" MouseWheel="MouseWheelResize"/>
+        </Grid>
+        <Button x:Name="AreaExit" Grid.Column="0" Click="AreaExit_Click" Width="15" Height="15" HorizontalAlignment="Right" VerticalAlignment="Top">
+            <Button.Background>
+                <ImageBrush ImageSource="Resources/exit.png" Stretch="Uniform">
+                    <ImageBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterY="0.5" CenterX="0.5" ScaleY="2" ScaleX="2"/>
+                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                            <RotateTransform CenterY="0.5" CenterX="0.5"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </ImageBrush.RelativeTransform>
+                </ImageBrush>
+            </Button.Background>
+        </Button>
+    </Grid>
+</Window>
