@@ -26,6 +26,13 @@ namespace DRnamespace
         bool mouseChecking = true, recMouse=true;
 
         int CapInt;
+        public double framerate = 1.0;
+        public double speed = 1.0;
+
+        //experiment
+        double tl = 0.0;
+        double tc = 0.0;
+        double smt_sp = 0.0;
 
         MainWindow mw;
 
@@ -105,6 +112,9 @@ namespace DRnamespace
         public void SetCaptureInterval(int t)
         {
             CapInt = t < 1 ? 1 : t;
+
+            tl = CapInt - tc;
+            tl = tl < 0 ? 0 : tl;
         }
 
         public void Start()
@@ -123,6 +133,8 @@ namespace DRnamespace
             Trace.WriteLine("Starting recorder loop...");
 
             Stopwatch time = new Stopwatch();
+            Stopwatch t2 = new Stopwatch();
+
 
             while (true)
             {
@@ -130,15 +142,29 @@ namespace DRnamespace
 
                 if (isCapturing && ( mw.appmani.IsTargetActive() || !isRecording ))
                 {
+
+                    double real_speed = t2.Elapsed.TotalMilliseconds * framerate / 1000.0;
+                    t2.Restart();
+                    smt_sp = smt_sp * 0.9 + 0.1 * real_speed;
+                    tl = tl - (real_speed - speed)*Math.Sqrt(speed);
+                    tl = tl < 0 ? 0 : tl;
+                    Console.WriteLine("Real Speed:" + real_speed + "  \tSmt Speed:" + smt_sp + "  \tInterval: " + tl);
                     mw.graph.Capture(recMouse);
 
                     if (isRecording && mw.appmani.IsTargetActive() && ( !mouseChecking || IsMousePressed() ))
                         mw.ffmpeg.Enqueue(mw.graph.GetBitmap());
 
-                    time.Stop();
-                    int timeLeft = CapInt - (int)time.Elapsed.TotalMilliseconds;
+                    
+                    tc = 0.9 * tc + 0.1 * time.Elapsed.TotalMilliseconds;
+                    /*int timeLeft = CapInt - (int)tc;
                     if (timeLeft > 0)
-                        SpinWait.SpinUntil(() => false, timeLeft);
+                        SpinWait.SpinUntil(() => false, timeLeft);*/
+
+                    /*int timeLeft = CapInt - (int)time.Elapsed.TotalMilliseconds;
+                    if (timeLeft > 0)
+                        SpinWait.SpinUntil(() => false, timeLeft);*/
+
+                    SpinWait.SpinUntil(() => false, (int)tl);
                 }
                 else
                     SpinWait.SpinUntil(() => false, 500);

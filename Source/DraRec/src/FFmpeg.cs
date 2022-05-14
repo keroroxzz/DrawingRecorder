@@ -22,16 +22,14 @@ namespace DRnamespace
 {
     public class FFmpeg
     {
-        bool DetectDifference = true;
-        bool isWrited = false;
-        bool threading = false;
-        Thread thread;
+        //bool DetectDifference = true;
+        //bool isWrited = false;
+        //bool threading = false;
+        //Thread thread;
 
         Process ffmpegProcess;
         Stream ffmpegStream;
-        ArrayList buffer = new ArrayList();
-
-        Compare compare = new Compare();
+        //ArrayList buffer = new ArrayList();
 
         MainWindow mw;
 
@@ -76,15 +74,32 @@ namespace DRnamespace
 
             ffmpegStream = ffmpegProcess.StandardInput.BaseStream;
 
-            StartThread();
+            //StartThread();
         }
 
         public void Enqueue(Bitmap bitmap)
         {
-            buffer.Add(bitmap);
+            if(mw.compare.Comparing(bitmap))
+                ToStream(bitmap);
+
+            //Sending to ffmpge is acutally pretty fast (<= 1ms), so there's no need to save them to another queue and streaming in another thread.
+            //buffer.Add(bitmap);
+        }
+        public void Finish()
+        {
+            try
+            {
+                Trace.WriteLine("Close FFmpeg streaming...");
+                ffmpegStream.Close();
+            }
+            catch (Exception e)
+            {
+                Trace.WriteLine("Close FFmpeg streaming failed : " + e.Message);
+            }
         }
 
-        public void Finish()
+
+        /*public void Finish()
         {
             try
             {
@@ -103,16 +118,16 @@ namespace DRnamespace
             {
                 Trace.WriteLine("FFmpeg finishing failed : " + e.Message);
             }
-        }
+        }*/
 
-        public bool IsWrited()
+        /*public bool IsWrited()
         {
             bool result = isWrited;
             isWrited = false;
             return result;
-        }
+        }*/
 
-        public void ActiveDectect()
+        /*public void ActiveDectect()
         {
             DetectDifference = true;
             Trace.WriteLine("Dectect state : " + DetectDifference);
@@ -122,10 +137,10 @@ namespace DRnamespace
         {
             DetectDifference = false;
             Trace.WriteLine("Dectect state : " + DetectDifference);
-        }
+        }*/
 
         //core===========================================================
-        void StartThread()
+        /*void StartThread()
         {
             StopThread();
             thread = new Thread(Loop);
@@ -154,11 +169,11 @@ namespace DRnamespace
                 return bmp;
             }
             return null;
-        }
+        }*/
 
         void ToStream(Bitmap bmp)
         {
-            isWrited = true;
+            //isWrited = true;
             try
             {
                 bmp.Save(ffmpegStream, ImageFormat.Bmp);
@@ -168,7 +183,7 @@ namespace DRnamespace
             { Trace.TraceError("Save ffmpegStream Failed!" + e.Message); }
         }
 
-        void Loop()
+        /*void Loop()
         {
             Trace.WriteLine("Starting FFmpeg thread...");
             threading = true;
@@ -180,6 +195,6 @@ namespace DRnamespace
                 else
                     SpinWait.SpinUntil(() => false, 10);
             }
-        }
+        }*/
     }
 }

@@ -1,4 +1,4 @@
-# DrawingRecorder v1.2.1
+# DrawingRecorder v1.3.0
 Make it easy, just record it!
 
 
@@ -8,8 +8,8 @@ Make it easy, just record it!
 
 
 #Build
-  VisualStudio 2019
+  VisualStudio 2022
 
 
 #Lastest Version
-  v1.2.1
+  v1.3.0

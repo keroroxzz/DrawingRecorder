@@ -9,6 +9,7 @@ External Process:
     FFmpeg project (unmodified) under the LGPLv2.1
 _____________________________________________________*/
 
+using System;
 using System.Windows;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -20,6 +21,8 @@ namespace DRnamespace
         public readonly AppManager appmani;
         public readonly FFmpeg ffmpeg;
         public readonly Graph graph;
+        public readonly Compare compare;
+        public readonly UpdateManager update;
         readonly Recorder recorder;
 
         readonly AreaWind area_window;
@@ -47,6 +50,8 @@ namespace DRnamespace
             ffmpeg = new FFmpeg(this);
             graph = new Graph();
             recorder = new Recorder(this);
+            compare = new Compare();
+            update = new UpdateManager();
             recorder.Start();
 
             //windows initializing
@@ -79,6 +84,7 @@ namespace DRnamespace
 
             loadSettings();
             UiInit();
+            update.RequestLatesVersion();
         }
 
         void loadSettings()
@@ -101,8 +107,8 @@ namespace DRnamespace
             area_window.Height = inimanip.GetInt("CaptureArea", "Height", 300);
 
             IniManip Lang = new IniManip("/lang.ini");
-            CaptureButton.Content = Lang.Get("Lang", "Capture", "Capture");
-            RecordButton.Content = Lang.Get("Lang", "Record", "Record");
+            CaptureButton.Content = Lang.Get("Lang", "Capture", "Record");
+            RecordButton.Content = Lang.Get("Lang", "Record", "Start");
             AreaButton.Content = Lang.Get("Lang", "Area", "Area");
             ProportionButtion.Content = Lang.Get("Lang", "Prop-None", "None");
             frameRate_textBlock.Text = Lang.Get("Lang", "FrameRate", "FrameRate");

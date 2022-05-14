@@ -6,6 +6,7 @@
  */
 
 using System;
+using System.Threading;
 using System.Drawing;
 using System.Diagnostics;
 using System.Drawing.Imaging;
@@ -13,27 +14,55 @@ using System.Runtime.InteropServices;
 
 namespace DRnamespace
 {
-    class Compare
+    public class Compare
     {
         [DllImport("msvcrt.dll")]
         private static extern int memcmp(IntPtr a, IntPtr b, long count);
 
+        bool DetectDifference = true;
         private Bitmap last = null;
+        private Bitmap target = null;
+        bool ret = false;
 
+        Thread thread=null;
 
         public bool Comparing(Bitmap bmp)
+        {
+            if ((thread==null || !thread.IsAlive) && DetectDifference)
+            {
+                target = (Bitmap)bmp.Clone();
+                thread = new Thread(run);
+                thread.Start();
+            }
+            return !DetectDifference || ret;
+        }
+
+        public void ActiveDectect()
+        {
+            DetectDifference = true;
+            Trace.WriteLine("Dectect state : " + DetectDifference);
+        }
+
+        public void StopDectect()
+        {
+            DetectDifference = false;
+            Trace.WriteLine("Dectect state : " + DetectDifference);
+        }
+
+        private void run()
         {
             try
             {
                 if (last == null)
                 {
-                    last = (Bitmap)bmp.Clone();
-                    return true;
+                    last = target;
+                    ret = true;
+                    return;
                 }
 
                 //fast comparison : https://stackoverflow.com/questions/2031217/what-is-the-fastest-way-i-can-compare-two-equal-size-bitmaps-to-determine-whethe
 
-                var a_b = bmp.LockBits(new Rectangle(new Point(0, 0), bmp.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                var a_b = target.LockBits(new Rectangle(new Point(0, 0), target.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
                 var b_b = last.LockBits(new Rectangle(new Point(0, 0), last.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 
                 IntPtr
@@ -42,18 +71,21 @@ namespace DRnamespace
 
                 int res = memcmp(a_ptr, b_ptr, a_b.Height * a_b.Stride);
 
-                bmp.UnlockBits(a_b);
+                target.UnlockBits(a_b);
                 last.UnlockBits(b_b);
 
-                last = (Bitmap)bmp.Clone();
+                last.Dispose();
+                last = target;
 
-                return res != 0;
+                ret = res != 0;
+                return;
             }
             catch(Exception e)
             {
                 Trace.WriteLine("Compare failed : " + e.Data);
             }
-            return true;
+            ret = true;
+            return;
         }
     }
 }

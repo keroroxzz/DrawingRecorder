@@ -14,6 +14,8 @@ namespace DRnamespace
 {
     public class AppManager
     {
+        private Process[] ProcessList;
+        private int process_id = 0;
         private StringBuilder TargetName = new StringBuilder();
         private uint TargetId = 0;
         private bool isLocking = true;
@@ -114,6 +116,13 @@ namespace DRnamespace
         public bool IsTargetAvalible()
         {
             return TargetId != 0 && TargetId != Process.GetCurrentProcess().Id;
+        }
+
+        public String NextProcess()
+        {
+            ProcessList = Process.GetProcesses();
+            process_id = process_id % ProcessList.Length;
+            return ProcessList[process_id++].ProcessName;
         }
     }
 }

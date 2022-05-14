@@ -44,8 +44,8 @@
                 <ColumnDefinition Width="60"/>
                 <ColumnDefinition Width="60"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="CaptureButton" Click="CaptureButton_Click" BorderBrush="{x:Null}" Focusable="False" Content="Capture" Foreground="Black" Grid.Column="1" Background="GhostWhite" FontWeight="Bold" Opacity="0.8"/>
-            <Button x:Name="RecordButton" BorderBrush="{x:Null}" Focusable="False" Grid.Column="2" Background="GhostWhite" Click="RecordButton_Click" RenderTransformOrigin="0.5,0.5" Content="Record" FontWeight="Bold" Opacity="0.8"/>
+            <Button x:Name="CaptureButton" Click="CaptureButton_Click" BorderBrush="{x:Null}" Focusable="False" Content="Capture" Foreground="Black" Grid.Column="2" Background="GhostWhite" FontWeight="Bold" Opacity="0.8"/>
+            <Button x:Name="RecordButton" BorderBrush="{x:Null}" Focusable="False" Grid.Column="3" Background="GhostWhite" Click="RecordButton_Click" RenderTransformOrigin="0.5,0.5" Content="Record" FontWeight="Bold" Opacity="0.8"/>
             <Button x:Name="AreaButton" BorderBrush="{x:Null}" Focusable="False" Content="Area" Click="AreaButton_Click" Foreground="Black" Background="GhostWhite" FontWeight="Bold" Opacity="0.8"/>
 
             <Button x:Name="ExitButton" Grid.Column="7" Content="" IsCancel="True" Click="ExitButton_Click" BorderBrush="{x:Null}" Foreground="{x:Null}">
@@ -53,8 +53,8 @@
                     <ImageBrush ImageSource="Resources/Exit.png" Stretch="Uniform"/>
                 </Button.Background>
             </Button>
-            <Button x:Name="Lock_Button" Grid.Column="4" FontSize="16" BorderBrush="GhostWhite" Focusable="False" Background="GhostWhite" Click="LockButton_Click" Opacity="0.8" />
-            <Button x:Name="ProportionButtion" BorderBrush="{x:Null}" Focusable="False" Background="GhostWhite" Content="None" Grid.Column="3" Click="ProportionButtion_Click" FontWeight="Bold" Opacity="0.8"/>
+            <Button x:Name="Lock_Button" Grid.Column="4" FontSize="16" BorderBrush="GhostWhite" Focusable="False" Background="GhostWhite" Click="LockButton_Click" Opacity="0.8" MouseWheel="Lock_Button_MouseWheel" />
+            <Button x:Name="ProportionButtion" BorderBrush="{x:Null}" Focusable="False" Background="GhostWhite" Content="None" Grid.Column="1" Click="ProportionButtion_Click" FontWeight="Bold" Opacity="0.8"/>
             <Button x:Name="HideButton" Grid.Column="6" Content="" IsCancel="True" FontSize="24" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="HideButton_Click">
                 <Button.Background>
                     <ImageBrush ImageSource="Resources/hide.png" Stretch="Uniform"/>

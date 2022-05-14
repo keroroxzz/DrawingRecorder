@@ -115,6 +115,7 @@
     <Compile Include="src\Graph.cs" />
     <Compile Include="src\AppManager.cs" />
     <Compile Include="src\SettingManip.cs" />
+    <Compile Include="src\UpdateManager.cs" />
     <Compile Include="src\UserInterface.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

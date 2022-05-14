@@ -89,10 +89,11 @@ namespace DRnamespace
                             {
                                 RecordButton.Background = Brushes.Red;
 
-                                if (ffmpeg.IsWrited())
+                                /*if (ffmpeg.IsWrited())
                                     notify.Icon = Properties.Resources.notify_writing;
                                 else
-                                    notify.Icon = Properties.Resources.notify_capturing;
+                                    notify.Icon = Properties.Resources.notify_capturing;*/
+                                notify.Icon = Properties.Resources.notify_capturing;
 
                                 if (!wasRecording)
                                 {
@@ -324,6 +325,12 @@ namespace DRnamespace
             }
         }
 
+
+        private void Lock_Button_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        {
+            //Lock_Button.Content = appmani.NextProcess();
+        }
+
         private void LockButton_Click(object sender, RoutedEventArgs e)
         {
             if (Drag.IsDragging())
@@ -347,7 +354,7 @@ namespace DRnamespace
                 else
                 {
                     Lock_Button.Content = "";
-                    notify.ShowBalloonTip(300, "", "Unavaliable Target!", System.Windows.Forms.ToolTipIcon.Info);
+                    notify.ShowBalloonTip(300, "", "Switch to a target app and switch back to Drawing Recorder to set the target.", System.Windows.Forms.ToolTipIcon.Info);
                 }
             }
         }
@@ -408,7 +415,12 @@ namespace DRnamespace
         private void setInterval()
         {
             if (recorder != null && SpeedBox.Text.Length > 0)
+            {
                 recorder.SetCaptureInterval((int)(Convert.ToDouble(SpeedBox.Text) / Convert.ToDouble(FrameRateBox.Text) * 1000.0));
+                recorder.framerate = Convert.ToDouble(FrameRateBox.Text);
+                recorder.speed = Convert.ToDouble(SpeedBox.Text);
+            }
+
         }
 
         private void SpeedBox_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -466,8 +478,8 @@ namespace DRnamespace
         
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            if (ffmpeg != null && sender == DC_box)
-                ffmpeg.ActiveDectect();
+            if (compare != null && sender == DC_box)
+                compare.ActiveDectect();
 
             if (recorder != null && sender == MD_box)
                 recorder.MouseChecking(true);
@@ -478,8 +490,8 @@ namespace DRnamespace
 
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            if (ffmpeg != null && sender == DC_box)
-                ffmpeg.StopDectect();
+            if (compare != null && sender == DC_box)
+                compare.StopDectect();
 
             if (recorder != null && sender == MD_box)
                 recorder.MouseChecking(false);

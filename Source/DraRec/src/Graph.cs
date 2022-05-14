@@ -109,23 +109,6 @@ namespace DRnamespace
                     }
                 }
         }
-        /*
-        public void Capture(bool rm)
-        {
-            lock (bmp)
-                //using (Graphics graphic = Graphics.FromImage(bmp))
-                try
-                {
-                    graphic.CopyFromScreen(px, py, 0, 0, new Size(width, height));
-                    if (rm)
-                        DrawCursor(graphic, px, py);
-                }
-                catch (Exception e)
-                {
-                    Trace.TraceError("CopyFromScreen Failed!" + e.Message);
-                    MessageBox.Show("CopyFromScreen Failed!");
-                }
-        }*/
 
         public Bitmap GetBitmap()
         {
