@@ -14,10 +14,8 @@ namespace DRnamespace
 {
     public class AppManager
     {
-        private Process[] ProcessList;
-        private int process_id = 0;
-        private StringBuilder TargetName = new StringBuilder();
-        private uint TargetId = 0;
+        private StringBuilder targetName = new StringBuilder();
+        private uint targetId = 0;
         private bool isLocking = true;
         private IntPtr hw;
 
@@ -67,12 +65,12 @@ namespace DRnamespace
 
         public string Target()
         {
-            return TargetName.ToString();
+            return targetName.ToString();
         }
 
         public bool IsTargetActive()
         {
-            return !isLocking || TargetName.ToString() == ActiveWindow();
+            return !isLocking || targetName.ToString() == ActiveWindow();
         }
 
         public void SetWindowsToForground()
@@ -85,14 +83,27 @@ namespace DRnamespace
             try
             {
                 hw = GetWindow(GetActiveWindow(), 2);
-                GetWindowThreadProcessId(hw, out TargetId);
-                Process p = Process.GetProcessById((int)TargetId);
-                TargetName.Clear();
-                TargetName.Append(p.ProcessName);
+                GetWindowThreadProcessId(hw, out targetId);
+                Process p = Process.GetProcessById((int)targetId);
+                targetName.Clear();
+                targetName.Append(p.ProcessName);
             }
             catch (Exception e)
             {
-                notify.ShowBalloonTip(1000, "", "Error 001 : "+e.Message, ToolTipIcon.Info);
+                notify.ShowBalloonTip(1000, "", "Error 001 : " + e.Message, ToolTipIcon.Info);
+            }
+        }
+
+        public void SetTargetName(string name)
+        {
+            try
+            {
+                targetName.Clear();
+                targetName.Append(name);
+            }
+            catch (Exception e)
+            {
+                notify.ShowBalloonTip(1000, "", "Error 001 : " + e.Message, ToolTipIcon.Info);
             }
         }
 
@@ -115,14 +126,7 @@ namespace DRnamespace
 
         public bool IsTargetAvalible()
         {
-            return TargetId != 0 && TargetId != Process.GetCurrentProcess().Id;
-        }
-
-        public String NextProcess()
-        {
-            ProcessList = Process.GetProcesses();
-            process_id = process_id % ProcessList.Length;
-            return ProcessList[process_id++].ProcessName;
+            return targetId != 0 && targetId != Process.GetCurrentProcess().Id;
         }
     }
 }

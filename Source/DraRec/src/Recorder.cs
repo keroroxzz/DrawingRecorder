@@ -56,10 +56,7 @@ namespace DRnamespace
         public void StartRecording()
         {
             if (isCapturing)
-            {
                 isRecording = true;
-                mw.notify.Icon = Properties.Resources.notify_capturing;
-            }
         }
         public void PlayStartSound()
         {
@@ -75,8 +72,6 @@ namespace DRnamespace
         public void StopRecording()
         {
             isRecording = false;
-            mw.RecordButton.Background = Brushes.GhostWhite;
-            mw.notify.Icon = Properties.Resources.notify_norm;
             PlayStopSound();
         }
 
@@ -88,13 +83,13 @@ namespace DRnamespace
         public void StartCapturing()
         {
             isCapturing = true;
-            mw.CaptureButton.Background = Brushes.Red;
+            Trace.WriteLine("Record : " + Recording());
         }
 
         public void StopCapturing()
         {
             isCapturing = false;
-            mw.CaptureButton.Background = Brushes.GhostWhite;
+            Trace.WriteLine("Record : " + Recording());
         }
 
         public void MouseChecking(bool mc)
@@ -140,7 +135,7 @@ namespace DRnamespace
             {
                 time.Restart();
 
-                if (isCapturing && ( mw.appmani.IsTargetActive() || !isRecording ))
+                if (isCapturing && ( mw.appManager.IsTargetActive() || !isRecording ))
                 {
 
                     double real_speed = t2.Elapsed.TotalMilliseconds * framerate / 1000.0;
@@ -151,7 +146,7 @@ namespace DRnamespace
                     Console.WriteLine("Real Speed:" + real_speed + "  \tSmt Speed:" + smt_sp + "  \tInterval: " + tl);
                     mw.graph.Capture(recMouse);
 
-                    if (isRecording && mw.appmani.IsTargetActive() && ( !mouseChecking || IsMousePressed() ))
+                    if (isRecording && mw.appManager.IsTargetActive() && ( !mouseChecking || IsMousePressed() ))
                         mw.ffmpeg.Enqueue(mw.graph.GetBitmap());
 
                     

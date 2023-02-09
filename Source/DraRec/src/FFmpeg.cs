@@ -13,9 +13,7 @@
 using System;
 using System.IO;
 using System.Drawing;
-using System.Threading;
 using System.Diagnostics;
-using System.Collections;
 using System.Drawing.Imaging;
 
 namespace DRnamespace

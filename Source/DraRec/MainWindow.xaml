@@ -5,10 +5,95 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DRnamespace"
         mc:Ignorable="d"
-        Title="Drawing Recorder" Height="80" Width="521" Closing="Window_Closing" WindowStyle="None" AllowsTransparency="True" MouseEnter="Window_MouseEnter" MouseLeave="Window_MouseLeave" WindowStartupLocation="CenterScreen" Margin="0" Background="#BF191919" Foreground="{x:Null}" BorderThickness="3" PreviewMouseMove="ControlBoard_PreviewMouseMove" PreviewMouseDown="ControlBoard_PreviewMouseDown" SnapsToDevicePixels="True">
+        Title="Drawing Recorder" Height="110
+        " Width="521" Closing="Window_Closing" WindowStyle="None" AllowsTransparency="True" MouseEnter="Window_MouseEnter" MouseLeave="Window_MouseLeave" WindowStartupLocation="CenterScreen" Margin="0" Background="#FF191919" Foreground="{x:Null}" BorderThickness="3" PreviewMouseMove="ControlBoard_PreviewMouseMove" PreviewMouseDown="ControlBoard_PreviewMouseDown" SnapsToDevicePixels="True">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="SettingBarColor" Color="#FF262829"/>
+        <SolidColorBrush x:Key="TextBlock_TextColor" Color="#FFCBCBCB"/>
+        <SolidColorBrush x:Key="TextBox_TextColor" Color="#FFE8EDF9"/>
+        <SolidColorBrush x:Key="TextBox_Color" Color="#FF191919"/>
+        <SolidColorBrush x:Key="TextBoxLocked_Color" Color="#FF494949"/>
+        <SolidColorBrush x:Key="TextBox_CaretColor" Color="#FF93A0B4"/>
+        <SolidColorBrush x:Key="Red" Color="#BFFF2828"/>
+        <SolidColorBrush x:Key="Background_Button" Color="#FFF8F8FF"/>
+        <SolidColorBrush x:Key="Background" Color="#FF212121"/>
+
+        <Style x:Key="Button_Style" TargetType="Button">
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Opacity" Value="0.8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" ClipToBounds="True">
+                            <Rectangle x:Name="rect"
+                                     Height="{TemplateBinding Height}"
+                                     Width="{TemplateBinding Width}"
+                                     Fill="{TemplateBinding Background}"
+                                       RadiusX="0.0"
+                                       RadiusY="0.0"/>
+                            <Rectangle x:Name="test"
+                                     Height="{TemplateBinding Height}"
+                                     Width="{TemplateBinding Width}"
+                                     Fill="{TemplateBinding Background}"
+                                       Opacity="0.0"/>
+                            <ContentPresenter x:Name="content" HorizontalAlignment="Center" VerticalAlignment="Center"  
+                                        Content="{TemplateBinding Content}"    
+                                        TextBlock.Foreground="{TemplateBinding Foreground}" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="Mouse.MouseEnter">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="(Rectangle.RadiusX)" Storyboard.TargetName="rect" From="0.0" To="5.0" Duration="0:0:0.2"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(Rectangle.RadiusY)" Storyboard.TargetName="rect" From="0.0" To="5.0" Duration="0:0:0.2"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="Mouse.MouseLeave">
+                                <EventTrigger.Actions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="(Rectangle.RadiusX)" Storyboard.TargetName="rect" From="5.0" To="0.0" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(Rectangle.RadiusY)" Storyboard.TargetName="rect" From="5.0" To="0.0" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Mouse.MouseEnter">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation  Storyboard.TargetProperty="(Button.Opacity)" From="0.8" To="1.0" Duration="0:0:0.2" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+
+                <EventTrigger RoutedEvent="Mouse.MouseLeave">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation  Storyboard.TargetProperty="(Button.Opacity)" From="1.0" To="0.8" Duration="0:0:0.2" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
     <Grid x:Name="baseGrid" Margin="3,0,3,3">
         <Grid.RowDefinitions>
-            <RowDefinition  Height="12"/>
+            <RowDefinition  Height="15"/>
             <RowDefinition x:Name="tool_bar" Height="11*"/>
             <RowDefinition x:Name="setting_bar" Height="48*"/>
         </Grid.RowDefinitions>
@@ -28,12 +113,12 @@
         </TextBlock>
         <TextBlock Grid.Column="2" Background="{DynamicResource Background}" Grid.Row="1" Grid.RowSpan="2"/>
 
-        <Button x:Name="BarChanger" BorderBrush="GhostWhite" Focusable="False" Grid.Column="1" BorderThickness="0" Grid.Row="1" Grid.RowSpan="2" Opacity="0.8" Click="BarChanger_Click" >
+        <Button x:Name="BarChanger" BorderBrush="GhostWhite" Focusable="False" Grid.Column="1" BorderThickness="0" Grid.Row="1" Grid.RowSpan="2" Opacity="0.8" Click="BarChanger_Click" HorizontalAlignment="Left" Width="15" Style="{StaticResource Button_Style}">
             <Button.Background>
                 <ImageBrush ImageSource="Resources/BarBut.png" Stretch="Uniform"/>
             </Button.Background>
         </Button>
-        <Grid Grid.Column="3" Margin="0,0,0,1" Grid.Row="1" Grid.ColumnSpan="2">
+        <Grid x:Name="ToolGrid" Grid.Column="3" Margin="0,0,0,1" Grid.Row="1" Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="60"/>
                 <ColumnDefinition Width="60"/>
@@ -44,18 +129,18 @@
                 <ColumnDefinition Width="60"/>
                 <ColumnDefinition Width="60"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="CaptureButton" Click="CaptureButton_Click" BorderBrush="{x:Null}" Focusable="False" Content="Capture" Foreground="Black" Grid.Column="2" Background="GhostWhite" FontWeight="Bold" Opacity="0.8"/>
-            <Button x:Name="RecordButton" BorderBrush="{x:Null}" Focusable="False" Grid.Column="3" Background="GhostWhite" Click="RecordButton_Click" RenderTransformOrigin="0.5,0.5" Content="Record" FontWeight="Bold" Opacity="0.8"/>
-            <Button x:Name="AreaButton" BorderBrush="{x:Null}" Focusable="False" Content="Area" Click="AreaButton_Click" Foreground="Black" Background="GhostWhite" FontWeight="Bold" Opacity="0.8"/>
+            <!--Button x:Name="CaptureButton" Click="CaptureButton_Click" BorderBrush="{x:Null}" Focusable="False" Content="Capture" Foreground="Black" Grid.Column="2" Background="GhostWhite" FontWeight="Bold" Opacity="0.8" Style="{StaticResource Button_Style}"/-->
+            <!-- Button x:Name="RecordButton" BorderBrush="{x:Null}" Focusable="False" Grid.Column="3" Background="GhostWhite" Click="RecordButton_Click" RenderTransformOrigin="0.5,0.5" Content="Record" FontWeight="Bold" Opacity="0.8"/-->
+            <!--Button x:Name="AreaButton" BorderBrush="{x:Null}" Focusable="False" Content="Area" Click="AreaButton_Click" Foreground="Black" Background="GhostWhite" FontWeight="Bold" Opacity="0.8"/-->
 
-            <Button x:Name="ExitButton" Grid.Column="7" Content="" IsCancel="True" Click="ExitButton_Click" BorderBrush="{x:Null}" Foreground="{x:Null}">
+            <Button x:Name="ExitButton" Grid.Column="7" Content="" IsCancel="True" Click="ExitButton_Click" BorderBrush="{x:Null}" Foreground="{x:Null}" Style="{StaticResource Button_Style}">
                 <Button.Background>
                     <ImageBrush ImageSource="Resources/Exit.png" Stretch="Uniform"/>
                 </Button.Background>
             </Button>
-            <Button x:Name="Lock_Button" Grid.Column="4" FontSize="16" BorderBrush="GhostWhite" Focusable="False" Background="GhostWhite" Click="LockButton_Click" Opacity="0.8" MouseWheel="Lock_Button_MouseWheel" />
-            <Button x:Name="ProportionButtion" BorderBrush="{x:Null}" Focusable="False" Background="GhostWhite" Content="None" Grid.Column="1" Click="ProportionButtion_Click" FontWeight="Bold" Opacity="0.8"/>
-            <Button x:Name="HideButton" Grid.Column="6" Content="" IsCancel="True" FontSize="24" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="HideButton_Click">
+            <!-- Button x:Name="Lock_Button" Grid.Column="4" FontSize="16" BorderBrush="GhostWhite" Focusable="False" Background="GhostWhite" Click="LockButton_Click" Opacity="0.8" MouseWheel="Lock_Button_MouseWheel" /-->
+            <!--Button x:Name="ProportionButtion" BorderBrush="{x:Null}" Focusable="False" Background="GhostWhite" Content="None" Grid.Column="1" Click="ProportionButtion_Click" FontWeight="Bold" Opacity="0.8"/-->
+            <Button x:Name="HideButton" Grid.Column="6" Content="" IsCancel="True" FontSize="24" BorderBrush="{x:Null}" Foreground="{x:Null}" Click="HideButton_Click" Style="{StaticResource Button_Style}">
                 <Button.Background>
                     <ImageBrush ImageSource="Resources/hide.png" Stretch="Uniform"/>
                 </Button.Background>
@@ -78,14 +163,17 @@
                 <RowDefinition Height="5"/>
                 <RowDefinition/>
                 <RowDefinition Height="5"/>
+                <RowDefinition/>
+                <RowDefinition Height="5"/>
             </Grid.RowDefinitions>
+            <TextBlock x:Name="quality_textBlock" Grid.Row="5" TextWrapping="Wrap" Text="Quality" Grid.Column="1" Foreground="{DynamicResource TextBlock_TextColor}"/>
             <TextBlock x:Name="frameRate_textBlock" TextWrapping="Wrap" Text="FrameRate" Margin="0,0,3,0" Grid.Row="1" Grid.Column="1" Foreground="{DynamicResource TextBlock_TextColor}" />
             <TextBlock x:Name="speed_textBlock" Grid.Row="3" TextWrapping="Wrap" Text="Speed" Grid.Column="1" Foreground="{DynamicResource TextBlock_TextColor}"/>
             <TextBox x:Name="FrameRateBox" Grid.Column="2" TextWrapping="Wrap" Text="30" Grid.Row="1" CaretBrush="{DynamicResource TextBox_CaretColor}" Foreground="{DynamicResource TextBox_TextColor}" Background="{DynamicResource TextBox_Color}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" TextChanged="FrameRateBox_TextChanged" MouseWheel="FrameRateBox_MouseWheel" PreviewMouseUp="TextBoxMouseUp" PreviewMouseDown="TextBoxMouseDown"/>
             <TextBox x:Name="SpeedBox" Grid.Column="2" Grid.Row="3" TextWrapping="Wrap" Text="0.1" CaretBrush="{DynamicResource TextBox_CaretColor}" Foreground="{DynamicResource TextBox_TextColor}" Background="{DynamicResource TextBox_Color}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" TextChanged="SpeedBox_TextChanged" MouseWheel="SpeedBox_MouseWheel" PreviewMouseUp="TextBoxMouseUp" PreviewMouseDown="TextBoxMouseDown"/>
             <CheckBox x:Name="DC_box" Content="DetectChange" Grid.Row="3" Grid.Column="4" IsChecked="True" Foreground="{DynamicResource TextBlock_TextColor}" Margin="0,0,0,1" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked"/>
             <TextBlock x:Name="fileNane_textBlock" Grid.Column="4" Grid.Row="1" TextWrapping="Wrap" Text="FileName" Foreground="{DynamicResource TextBlock_TextColor}"/>
-            <Button x:Name="OpenFolderButton" Grid.Column="4" Grid.Row="1" RenderTransformOrigin="0.5,0.5" Width="21" Margin="0,0,5,0" HorizontalAlignment="Right" Click="OpenFolderButton_Click">
+            <Button x:Name="OpenFolderButton" Grid.Column="4" Grid.Row="1" RenderTransformOrigin="0.5,0.5" Width="21" Margin="0,0,5,0" HorizontalAlignment="Right" Click="OpenFolderButton_Click" Style="{StaticResource Button_Style}">
                 <Button.Background>
                     <ImageBrush ImageSource="Resources/folder.png" Stretch="UniformToFill"/>
                 </Button.Background>
@@ -96,6 +184,7 @@
             <TextBox Grid.Column="5" Grid.Row="3" x:Name="ArgumentBox" Text="" Foreground="{DynamicResource TextBox_TextColor}" Background="{DynamicResource TextBox_Color}" CaretBrush="{DynamicResource TextBox_CaretColor}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.ColumnSpan="2" IsEnabled="False" Visibility="Hidden"/>
             <CheckBox x:Name="MD_box" Content="MouseDown" Grid.Row="3" Grid.Column="5" IsChecked="True" Foreground="{DynamicResource TextBlock_TextColor}" Margin="0,0,1,1" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked"/>
             <CheckBox x:Name="RM_box" Content="RecordMouse" Grid.Row="3" Grid.Column="6" IsChecked="True" Foreground="{DynamicResource TextBlock_TextColor}" Margin="0,0,1,1" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked"/>
+            <CheckBox x:Name="CU_box" Content="CheckUpdate" Grid.Row="5" Grid.Column="4" IsChecked="True" Foreground="{DynamicResource TextBlock_TextColor}" Margin="0,0,0,1" Unchecked="CheckBox_Unchecked" Checked="CheckBox_Checked"/>
         </Grid>
         <TextBlock Grid.Column="3" Background="{DynamicResource Background}" Margin="336,0,17,1" Grid.Row="1"/>
     </Grid>

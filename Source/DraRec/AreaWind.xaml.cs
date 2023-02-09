@@ -32,19 +32,14 @@ namespace DRnamespace
 
         Thread resize;
 
-        //Brush LockColor, UnlockColor;
+        readonly MyDragable Drag;
+        readonly MainWindow mw;
 
-        Button AreaButton;
-
-        MyDragable Drag;
-
-        MainWindow mw;
-
-        public AreaWind(Button button, MainWindow mw_)
+        public AreaWind(MainWindow mw_)
         {
             InitializeComponent();
 
-            AreaButton = button;
+            //AreaButton = button;
             mw = mw_;
 
             //LockColor = (Brush)FindResource("Red");
@@ -132,8 +127,8 @@ namespace DRnamespace
 
         private void AreaExit_Click(object sender, RoutedEventArgs e)
         {
-            Hide();
-            AreaButton.Background = Brushes.GhostWhite;
+            //Hide();
+            //AreaButton.Background = Brushes.GhostWhite;
         }
 
 
@@ -190,8 +185,8 @@ namespace DRnamespace
         {
             SetArea();
 
-            WidthBox.Text = area.Width.ToString();
-            HeightBox.Text = area.Height.ToString();
+            WidthBox.Text = ((int)area.Width).ToString();
+            HeightBox.Text = ((int)area.Height).ToString();
         }
 
         private void TypeInSize(object sender, KeyEventArgs e)

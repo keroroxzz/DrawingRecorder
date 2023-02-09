@@ -27,7 +27,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.2.1.%2a</ApplicationVersion>
+    <ApplicationVersion>1.3.1.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -82,6 +82,9 @@
     <Compile Include="AreaWind.xaml.cs">
       <DependentUpon>AreaWind.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Message.xaml.cs">
+      <DependentUpon>Message.xaml</DependentUpon>
+    </Compile>
     <Compile Include="src\Compare.cs" />
     <Compile Include="Displayer.xaml.cs">
       <DependentUpon>Displayer.xaml</DependentUpon>
@@ -115,12 +118,18 @@
     <Compile Include="src\Graph.cs" />
     <Compile Include="src\AppManager.cs" />
     <Compile Include="src\SettingManip.cs" />
+    <Compile Include="src\ListButton.cs" />
+    <Compile Include="src\SwitchButton.cs" />
     <Compile Include="src\UpdateManager.cs" />
     <Compile Include="src\UserInterface.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Message.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

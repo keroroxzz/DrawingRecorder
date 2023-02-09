@@ -37,7 +37,7 @@
             <TextBlock Grid.Column="2" Text="X" Foreground="White" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <TextBox x:Name="HeightBox" Grid.Column="3" Foreground="Black" TextAlignment="Center" PreviewKeyDown="TypeInSize" MouseWheel="MouseWheelResize"/>
         </Grid>
-        <Button x:Name="AreaExit" Grid.Column="0" Click="AreaExit_Click" Width="15" Height="15" HorizontalAlignment="Right" VerticalAlignment="Top">
+        <!--Button x:Name="AreaExit" Grid.Column="0" Click="AreaExit_Click" Width="15" Height="15" HorizontalAlignment="Right" VerticalAlignment="Top">
             <Button.Background>
                 <ImageBrush ImageSource="Resources/exit.png" Stretch="Uniform">
                     <ImageBrush.RelativeTransform>
@@ -50,6 +50,6 @@
                     </ImageBrush.RelativeTransform>
                 </ImageBrush>
             </Button.Background>
-        </Button>
+        </Button-->
     </Grid>
 </Window>
